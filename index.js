@@ -41,7 +41,10 @@ var eos = function(stream, opts, callback) {
 
 	var onclose = function() {
 		if (readable && rs && !rs.ended && !rs.destroyed) return callback.call(stream, new Error('premature close'));
-		if (writable && ws && !ws.ended) return callback.call(stream, new Error('premature close'));
+		if (writable && ws && !ws.ended && !ws.destroyed) return callback.call(stream, new Error('premature close'));
+
+		if (readable && rs && rs.destroyed) return callback.call(stream)
+		if (writable && ws && ws.destroyed) return callback.call(stream)
 	};
 
 	var onrequest = function() {
